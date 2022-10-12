@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Line Chart</title>
+    <style>
+      html {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Selic Rate History</h1>
+    <svg id="chart" width="600" height="300"></svg>
+    <script>
+      fetch(
+        "https://api.bcb.gov.br/dados/serie/bcdata.sgs.4189/dados?formato=json"
+      )
+        .then((resp) => resp.json())
+        .then((data) => {
+          data.splice(0, 412);
+          console.log(data);
+          generateChart(data, 600, 300, [0, 2, 4, 6, 8, 10, 12, 14], 4);
+        });
+
+      function generateChart(data, tw, th, scale, dist) {
+        const margin = 30;
+        const w = tw - 2 * margin;
+        const h = th - 2 * margin;
+
+        const n = data.length;
+        const max = scale[scale.length - 1];
+        const step = w / (n - 1);
+        let pathD = "";
+        let scaleY = "";
+        for (let i = 0; i < n; i++) {
+          const posY = h - (data[i].valor / max) * h;
+          const posX = i * step;
+          if (i === 0) {
+            pathD += `M 0 ${posY}`;
+          } else {
+            pathD += `L ${posX} ${posY}`;
+          }
+          if (i % dist == 0) {
+            scaleY += `<text text-anchor="middle" x="${posX}" y="${
+              h + margin
+            }">${formatDate(data[i].data)}</text>`;
+          }
+        }
+        let scaleX = "";
+        for (let i = 0; i < scale.length; i++) {
+          const posY = h - (scale[i] / max) * h;
+          scaleX += `<text text-anchor="end" x="-10" y="${posY}">${scale[i]}</text>`;
+        }
+
+        const svg = document.getElementById("chart");
+        svg.innerHTML = `
+          <g transform="translate(${margin}, ${margin})">
+            <path d= "${pathD}" stroke="blue" fill="none"/>
+            <path d= "M 0 0 V ${h}" stroke="black"/>
+            <path d= "M 0 ${h} H ${w}" stroke="black"/>
+            ${scaleY}
+            ${scaleX}
+          </g>
+        `;
+      }
+      function formatDate(data) {
+        const dma = data.split("/");
+        return dma[1] + "/" + dma[2].substring(2);
+      }
+    </script>
+  </body>
+</html>
