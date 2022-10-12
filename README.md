@@ -6,3 +6,5 @@ The chart was made by using SVG on a simple HTML document, and loading data from
 "https://api.bcb.gov.br/dados/serie/bcdata.sgs.4189/dados?formato=json"
 
 Call backend: <json-server --watch backend.json>
+
+![image](https://user-images.githubusercontent.com/108364424/195416445-4dabff3d-5365-435c-b998-3d66f2dddbdb.png)
