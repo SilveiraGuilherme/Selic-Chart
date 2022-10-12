@@ -1,4 +1,4 @@
-# Selic Rate Line Chart
+#Selic Rate Line Chart
 
 This is a chart that shows the changes in the Selic rate from October 2020 to October 2022 in Brazil.
 
